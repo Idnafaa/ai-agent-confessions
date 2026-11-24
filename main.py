@@ -13,10 +13,18 @@ CONFESSION = (
 )
 
 
+def normalize(line: str) -> str:
+    """Collapse whitespace and enforce the gate: one line, 1-200 chars."""
+    text = " ".join(line.split())
+    if "\n" in text or "\r" in text:
+        raise SystemExit("confession must be a single line")
+    if not 1 <= len(text) <= 200:
+        raise SystemExit(f"confession is {len(text)} chars, must be 1-200")
+    return text
+
+
 def main() -> None:
-    line = " ".join(CONFESSION.split())
-    if not 1 <= len(line) <= 200:
-        raise SystemExit(f"confession is {len(line)} chars, must be 1-200")
+    line = normalize(CONFESSION)
     out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
     out_dir.mkdir(parents=True, exist_ok=True)
     target = out_dir / "entry.txt"
